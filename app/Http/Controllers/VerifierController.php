@@ -11,6 +11,20 @@ class VerifierController extends Controller
     public function verifyRegistration(Request $request)
     {
         // Implementasi untuk memverifikasi pendaftaran pengguna
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:verifikator,email',
+            'password' => 'required|string|min:8',
+        ]);
+
+        $user = new User();
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = bcrypt($request->password);
+        $user->role = 'verifikator';
+        $user->save();
+
+        return response()->json(['message' => 'User registered successfully'], 201);
     }
 
     // ACC pengajuan izin
